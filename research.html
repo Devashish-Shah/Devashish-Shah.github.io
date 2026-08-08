@@ -1,22 +1,82 @@
 <!DOCTYPE html>
+<!--
+  ============================================================================
+  research.html — publications, preprints and research interests.
+
+  Same four parts as every page: <head>, <header>, <main>, <footer>.
+  The <header> and <footer> are copies of the ones in index.html — if you
+  change the menu, change it in all five files.
+
+  THE ONE THING TO KNOW ABOUT THIS PAGE
+  Every publication is one self-contained block:
+
+      <article class="card pub"> … </article>
+
+  To add a paper, copy an entire block from <article to </article> and edit
+  the text inside. To remove one, delete the whole block. To reorder, move
+  blocks around. Nothing outside the block needs touching.
+
+  Search for  EDIT  to find every spot meant to change.
+  ============================================================================
+-->
 <html lang="en" data-theme="light">
+<!--   ↑ lang="en" tells browsers and screen readers the page is in English.
+       ↑ data-theme is the light/dark switch. Don't set it by hand — the little
+         script at the bottom of <head> sets it before the page draws. -->
+
 <head>
+<!-- ==========================================================================
+     HEAD — page settings. None of this appears on the page itself; it tells
+     the browser, Google and social networks what this page is.
+     ========================================================================== -->
+
 <meta charset="utf-8">
+<!-- Character encoding. Leave this alone — it is what makes é, ü and — work. -->
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Makes the page fit phone screens. Removing this breaks mobile entirely. -->
+
 <title>Research — Devashish Shah</title>
+<!-- EDIT: shows in the browser tab and as the headline in Google results.
+     Keep the pattern "Page — Your Name" so every tab is identifiable. -->
+
 <meta name="description" content="Publications, preprints and past research projects of Devashish Shah.">
+<!-- EDIT: the grey summary line under your title in Google results.
+     Aim for 150 characters or so; longer gets cut off. -->
+
 <meta name="author" content="Devashish Shah">
 
-<!-- Open Graph / social preview. EDIT: set the absolute URL once you know your domain. -->
+<!-- Open Graph: controls the preview card when someone shares a link to this
+     page on Slack, Twitter, WhatsApp, LinkedIn and so on.
+     EDIT og:image to a real photo (1200×630 px works best) once you have one.
+     Note: for the preview image to work on most platforms this must be a FULL
+     address, e.g. https://devashish-shah.github.io/assets/img/preview.jpg —
+     a relative path like the one below often will not be picked up. -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Research — Devashish Shah">
 <meta property="og:description" content="Publications, preprints and past research projects of Devashish Shah.">
 <meta property="og:image" content="assets/img/portrait.svg">
 
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="assets/css/style.css">
+<!-- The little icon in the browser tab. EDIT assets/img/favicon.svg to change
+     the "DS" monogram or its colour. -->
 
-<!-- Sets the theme before first paint so there is no light/dark flash. -->
+<link rel="stylesheet" href="assets/css/style.css">
+<!-- Every visual decision — colours, fonts, spacing, layout — lives in that
+     one file. This line is what connects it. If the page ever loads as plain
+     black text on white, this file is missing or the path is wrong. -->
+
+<!-- ==========================================================================
+     THEME SCRIPT — must stay here, inside <head>, and must stay inline.
+
+     Why: it runs before the browser draws anything. If it lived at the bottom
+     of the page with the other script, a dark-mode visitor would see a white
+     flash first. Reading the saved choice here avoids that.
+
+     What it does: use the saved choice if there is one; otherwise follow the
+     visitor's system setting; if storage is blocked (private browsing), fall
+     through to light and carry on rather than erroring.
+     ========================================================================== -->
 <script>
 (function () {
   try {
@@ -27,17 +87,46 @@
 })();
 </script>
 </head>
-<body>
-<a class="skip-link" href="#main">Skip to content</a>
 
-<!-- ======================= HEADER (identical on every page) ======================= -->
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+<!-- Invisible until focused with the Tab key. Lets keyboard and screen-reader
+     users jump past the menu straight to the content. Keep it as the first
+     thing in <body>. -->
+
+
+<!-- ==========================================================================
+     HEADER — the bar across the top.
+
+     ⚠ THIS BLOCK IS IDENTICAL ON ALL FIVE PAGES. To change the menu, change
+     it here, then copy this whole <header>…</header> into the other four
+     files. Otherwise the menu will differ depending on which page you're on.
+
+     Note there is no "current page" class to set: assets/js/main.js works out
+     which page you're on and highlights the right link automatically. Adding a
+     page means adding one <li> here (and in the other four files) — nothing else.
+     ========================================================================== -->
 <header class="site-header">
   <div class="wrap">
+  <!-- .wrap is the container that keeps content from touching the screen
+       edges and stops it sprawling on wide monitors. Used on every section. -->
+
+    <!-- Your name, top left. Clicking it returns to the homepage. -->
     <a class="brand" href="index.html">
       Devashish Shah
       <span class="brand-sub">Experimental quantum transport</span>
+      <!-- EDIT: the small grey line under your name. A few words on what you
+           do. Delete this <span> entirely if you prefer just the name. -->
     </a>
 
+    <!-- ------------------------------------------------------------------
+         THE MENU
+         To add a page: copy one <li> line, change the filename and the label.
+         To remove a page: delete its <li> line.
+         To reorder: move the <li> lines around.
+         The href must match the filename exactly, capitals included.
+         ------------------------------------------------------------------ -->
     <nav class="nav" id="primary-nav" aria-label="Primary">
       <ul>
         <li><a href="index.html">About</a></li>
@@ -48,6 +137,8 @@
       </ul>
     </nav>
 
+    <!-- The hamburger button. Hidden on desktop, appears under 760px wide.
+         The three lines are drawn by the <path> below, not an image file. -->
     <button class="icon-btn nav-toggle" data-nav-toggle type="button"
             aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -55,6 +146,8 @@
       </svg>
     </button>
 
+    <!-- The light/dark button. It holds both icons; CSS shows whichever
+         matches the current theme and hides the other. -->
     <div class="header-tools">
       <button class="icon-btn" data-theme-toggle type="button" aria-label="Switch to dark theme" aria-pressed="false">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
@@ -66,75 +159,124 @@
         </svg>
       </button>
     </div>
+
   </div>
 </header>
 
+
+<!-- ==========================================================================
+     MAIN — the Research page.
+     ========================================================================== -->
 <main id="main" class="wrap">
 
+  <!-- ------------------------------------------------------------------------
+       PAGE HEADING
+       .page-head groups the small uppercase label, the <h1> and the intro
+       line, and limits them to a readable width.
+       ------------------------------------------------------------------------ -->
   <header class="page-head">
     <p class="eyebrow">Research</p>
     <h1>Research</h1>
     <p class="lede">
-      <!-- EDIT: two or three lines on what you actually work on and why. -->
+      <!-- EDIT: two or three lines on what you work on and why. "lede" is the
+           journalism spelling of the opening line; the class just makes it
+           slightly larger and grey. -->
       Electron transport in low-dimensional systems, where superconductivity, confinement and
       topology meet — and what those effects are good for in quantum information and sensing.
     </p>
   </header>
 
-  <!-- =================== RESEARCH INTERESTS =================== -->
+
+  <!-- ------------------------------------------------------------------------
+       INTERESTS — themed cards.
+       Three cards fit in a row on a desktop; they stack automatically on
+       narrow screens. Add a fourth and the grid rearranges itself.
+       ------------------------------------------------------------------------ -->
   <section class="section">
     <h2 class="section-title">Interests</h2>
+
     <div class="card-grid">
-      <!-- EDIT: duplicate a .card block to add a theme; delete to remove one. -->
+
+      <!-- ONE THEME — copy this whole <div class="card">…</div> to add another -->
       <div class="card">
         <h3>Quantum transport</h3>
         <p class="meta">Coulomb blockade · quantum dots · tunnel barriers</p>
+        <!-- .meta = small grey line. The "·" separators are just typed characters. -->
         <p>Placeholder. One short paragraph on this theme — what the question is and what you measure.</p>
       </div>
+
       <div class="card">
         <h3>Superconductivity</h3>
         <p class="meta">Hybrid devices · Andreev physics</p>
         <p>Placeholder. One short paragraph.</p>
       </div>
+
       <div class="card">
         <h3>Topological phenomena</h3>
         <p class="meta">Edge states · protected modes</p>
         <p>Placeholder. One short paragraph.</p>
       </div>
+
     </div>
   </section>
 
-  <!-- =================== PUBLICATIONS =================== -->
+
+  <!-- ========================================================================
+       PUBLICATIONS
+
+       ANATOMY OF ONE ENTRY — the parts, in the order they appear:
+
+         .pub-head   the title, plus the date tag that floats to the right
+         .authors    author list; wrap your own name in <span class="me">
+                     so it comes out bold and darker than the others
+         .venue      journal, volume, page, year — shown in italics
+         .meta       lab and supervisor, or anything else small and grey
+         .abstract   two or three sentences, not the full journal abstract
+         .pub-links  the row of pill-shaped links
+         .pub-figure an optional image (delete the whole <figure> if unused)
+
+       Every one of those is optional. Delete any line you don't need — the
+       spacing adjusts itself.
+       ======================================================================== -->
   <section class="section">
     <h2 class="section-title">Publications</h2>
 
-    <!-- ============ one publication: copy this whole .card block to add another ============ -->
+    <!-- ============ PAPER 1 — copy this whole <article> to add a paper ============ -->
     <article class="card pub">
+
       <div class="pub-head">
         <h3>Preserving Coulomb blockade in transport spectroscopy of quantum dots by dynamical
             tunnel-barrier compensation</h3>
         <span class="date-tag">Sep 2024</span>
+        <!-- The date sits in its own little outlined capsule on the right.
+             On a narrow screen it drops below the title by itself. -->
       </div>
 
       <p class="authors">
-        <!-- EDIT: full author list; wrap your own name in <span class="me"> -->
+        <!-- EDIT: the full author list. class="me" marks your own name. -->
         <span class="me">D. Shah</span>, A. Author, B. Author, S. Mahapatra
       </p>
+
       <p class="venue">Journal name, volume, page (2024)</p>
+      <!-- EDIT: where it was published. Delete this line for unpublished work. -->
 
       <p class="meta">
         Silicon Quantum Computing Lab, IIT Bombay
         <span class="sep">·</span> Supervisor: Prof. Suddhasatta Mahapatra
       </p>
+      <!-- class="sep" makes the separator dot fainter than the text. -->
 
       <p class="abstract">
-        <!-- EDIT: shorten to two or three sentences. -->
+        <!-- EDIT: your own summary, not the journal's. Two or three sentences.
+             People decide whether to click based on this. -->
         In surface-gated quantum dots the plunger gate also modulates the tunnel barriers, which
         limits the range over which Coulomb blockade survives. Dynamically tuning the barriers to
         compensate for that capacitive cross-talk preserves blockade across a much wider gate-voltage
         window, extending the usable range of transport spectroscopy.
       </p>
 
+      <!-- LINKS. Each <a> is one pill. Delete the ones you don't have —
+           an empty href="#" that goes nowhere looks worse than no link. -->
       <div class="pub-links">
         <a href="https://doi.org/10.1063/5.0241328" target="_blank" rel="noopener">DOI</a>
         <a href="#">arXiv</a>
@@ -142,14 +284,20 @@
         <a href="#">BibTeX</a>
       </div>
 
+      <!-- OPTIONAL FIGURE — delete this whole <figure> block if you don't
+           want an image. Upload the real one to assets/img/ first. -->
       <figure class="pub-figure">
-        <!-- EDIT: a figure from the paper, or delete this <figure> entirely. -->
         <img src="assets/img/figure-1.svg" alt="Placeholder figure from the quantum dot paper" width="1280" height="600">
         <figcaption>Placeholder figure — replace with a panel from the paper.</figcaption>
       </figure>
-    </article>
 
+    </article>
+    <!-- ============ END OF PAPER 1 ============ -->
+
+
+    <!-- ============ PAPER 2 — note: no figure on this one ============ -->
     <article class="card pub">
+
       <div class="pub-head">
         <h3>Measurement of electromagnetic radiation force using a capacitance interferometer</h3>
         <span class="date-tag">Aug 2024</span>
@@ -173,10 +321,17 @@
         <a href="#">PDF</a>
         <a href="#">BibTeX</a>
       </div>
+
     </article>
+
   </section>
 
-  <!-- =================== PREPRINTS =================== -->
+
+  <!-- ------------------------------------------------------------------------
+       PREPRINTS — same block structure as Publications above, just under a
+       different heading. If you'd rather have one combined list, delete this
+       <section> and move the <article> into the Publications section.
+       ------------------------------------------------------------------------ -->
   <section class="section">
     <h2 class="section-title">Preprints</h2>
 
@@ -193,16 +348,26 @@
         <a href="#">PDF</a>
       </div>
     </article>
+
   </section>
 
-  <!-- =================== EARLIER PROJECTS =================== -->
+
+  <!-- ------------------------------------------------------------------------
+       EARLIER PROJECTS — a vertical timeline.
+
+       class="timeline" draws the vertical line and the dots down the left.
+       Each <li> is one entry and gets its own dot automatically; you don't
+       draw them. Copy an <li>…</li> to add an entry.
+       ------------------------------------------------------------------------ -->
   <section class="section prose">
     <h2 class="section-title">Earlier projects</h2>
+
     <p>
-      <!-- EDIT: keep or cut. Point the link at your GitHub. -->
+      <!-- EDIT: point the link at your GitHub, or delete this paragraph. -->
       Smaller undergraduate projects — course projects, instrumentation builds and analysis code —
       live on <a href="https://github.com/" target="_blank" rel="noopener">GitHub</a>.
     </p>
+
     <ul class="timeline">
       <li>
         <h3>Project title</h3>
@@ -215,23 +380,45 @@
         <p>One line on what you built or measured.</p>
       </li>
     </ul>
+
   </section>
 
 </main>
 
-<!-- ======================= FOOTER (identical on every page) ======================= -->
+
+<!-- ==========================================================================
+     FOOTER
+
+     ⚠ IDENTICAL ON ALL FIVE PAGES — change it here, then copy into the others.
+
+     The year updates itself: <span data-year> is filled in by main.js each
+     time the page loads, so the copyright never goes stale. The "2026"
+     inside it is only a fallback for visitors with JavaScript disabled.
+     ========================================================================== -->
 <footer class="site-footer">
   <div class="wrap">
+
     <p>&copy; <span data-year>2026</span> Devashish Shah · Last updated August 2026</p>
+    <!-- EDIT: "&copy;" prints ©. Update the "Last updated" date when you make
+         a real change, or delete that part if you'd rather not track it. -->
+
+    <!-- Same icons as the hero, at a smaller size. Keep the two sets in sync. -->
     <ul class="social">
       <li><a href="https://scholar.google.com/citations?user=hYPi2G2QTI0C&amp;hl=en" target="_blank" rel="noopener" aria-label="Google Scholar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 1 8l11 6 9-4.9V16h2V8L12 2zM5 13.2V17c0 2.2 3.1 4 7 4s7-1.8 7-4v-3.8l-7 3.8-7-3.8z"/></svg></a></li>
       <li><a href="https://orcid.org/0009-0007-5829-7707" target="_blank" rel="noopener" aria-label="ORCID"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11"/><text x="12" y="16.4" text-anchor="middle" font-family="Georgia, serif" font-size="10" font-weight="700" fill="var(--bg)">iD</text></svg></a></li>
       <li><a href="https://www.linkedin.com/in/devashish-shah-937392216" target="_blank" rel="noopener" aria-label="LinkedIn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 1 0 3.5a2.5 2.5 0 0 1 4.98 0zM.25 8h4.5v16H.25V8zM8 8h4.3v2.2h.06c.6-1.14 2.06-2.34 4.24-2.34 4.54 0 5.4 2.99 5.4 6.87V24h-4.5v-7.35c0-1.75-.03-4-2.44-4-2.44 0-2.81 1.9-2.81 3.87V24H8V8z"/></svg></a></li>
       <li><a href="mailto:devashish.shah@ista.ac.at" aria-label="Email"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h17A1.5 1.5 0 0 1 22 5.5v.4l-10 5.7-10-5.7v-.4zm0 2.7V18a1.5 1.5 0 0 0 1.5 1.5h17A1.5 1.5 0 0 0 22 18V8.2l-9.5 5.4a1 1 0 0 1-1 0L2 8.2z"/></svg></a></li>
     </ul>
+
   </div>
 </footer>
 
 <script src="assets/js/main.js"></script>
+<!-- Loaded last, after the content, so the page appears as fast as possible.
+     Handles: the dark-mode button, the mobile menu, highlighting the current
+     page in the nav, the photo lightbox, and the year in the footer.
+     Nothing here is required for reading the site — with JavaScript off, all
+     the text, images and links still work. -->
+
 </body>
 </html>

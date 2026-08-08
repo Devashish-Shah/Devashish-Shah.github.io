@@ -37,8 +37,12 @@ CNAME DNS record at `<username>.github.io`.
 
 ## Editing it
 
+Every file is heavily commented. The comments explain what each block does, how to
+duplicate it and what is safe to delete — they are invisible on the page and you can
+strip any of them out once you no longer need them.
+
 **Text and content** — open the relevant `.html` file. Every place meant to be
-replaced is flagged with an `<!-- EDIT: ... -->` comment. Adding an item almost always means
+replaced is flagged with an `EDIT` comment. Adding an item almost always means
 copying the block above it and changing the words.
 
 **The navigation menu** lives in every page's `<header>`, and the five copies are byte-identical.
