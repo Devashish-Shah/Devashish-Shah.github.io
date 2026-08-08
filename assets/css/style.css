@@ -1,48 +1,119 @@
-/* ==========================================================================
-   Devashish Shah — personal site
-   Single stylesheet shared by every page.
+/* ============================================================================
+   style.css — every visual decision on the site lives in this one file.
 
-   Contents
-   1.  Design tokens (colours, type, spacing)  — edit here to restyle the site
-   2.  Base & typography
-   3.  Layout helpers
-   4.  Header / navigation
-   5.  Hero (About page)
-   6.  Content blocks: prose, cards, lists, tables, pills
-   7.  Publications
-   8.  Gallery + lightbox
-   9.  Footer
-   10. Responsive
-   ========================================================================== */
+   HOW CSS WORKS, IN THREE LINES
+     selector { property: value; }
+   The selector picks elements; the properties change how they look.
+   ".card" targets elements with class="card". "h2" targets every <h2>.
+   A dot means class, no dot means the tag itself, a space means "inside".
 
-/* 1. Design tokens ------------------------------------------------------ */
+   HOW THIS FILE IS ORGANISED
+     1.  Design tokens ....... the colours, fonts and sizes. START HERE.
+     2.  Base & typography ... defaults for text, links, headings
+     3.  Layout helpers ...... containers and section spacing
+     4.  Header / navigation . the top bar
+     5.  Hero ................ the About page's opening block
+     6.  Content blocks ...... buttons, cards, pills, lists, timelines
+     7.  Publications ........ the paper entries on the Research page
+     8.  Gallery + lightbox .. the Hobbies page
+     9.  Footer
+     10. Responsive .......... the phone and tablet adjustments
+
+   THE 90% CASE
+   If you want to change how the site looks, section 1 is probably enough.
+   Change --accent and every link, button and highlight follows.
+
+   A WARNING ABOUT ORDER
+   When two rules target the same thing, the LATER one wins. So if you add
+   something at the bottom of this file it will override what came before.
+   That is occasionally useful and frequently the cause of "why isn't my
+   change working" — check whether something below is overriding you.
+   ============================================================================ */
+
+
+/* ============================================================================
+   1. DESIGN TOKENS
+   ============================================================================
+   Everything below is a variable. Defining a colour once here and referring
+   to it everywhere else means you change it in ONE place and the whole site
+   follows — rather than hunting for forty copies of the same hex code.
+
+   Syntax: --name: value;   defines it.
+           var(--name)      uses it.
+
+   :root means "the whole document", so these apply everywhere.
+   ============================================================================ */
 
 :root {
-  /* Light theme */
-  --bg:            #fbfaf8;
-  --bg-soft:       #f3f1ec;
-  --surface:       #ffffff;
-  --border:        #e2ded6;
-  --border-strong: #cdc7bb;
-  --text:          #1e1c19;
-  --text-muted:    #625d55;
-  --text-faint:    #8b857b;
-  --accent:        #1d4e6f;   /* deep slate blue — the single accent colour */
-  --accent-soft:   #e8eef3;
-  --accent-hover:  #14384f;
+  /* ---- LIGHT THEME COLOURS -------------------------------------------------
+     These are deliberately not pure white and pure black. #fbfaf8 instead of
+     #ffffff and #1e1c19 instead of #000000 lowers the glare and reads as
+     warmer and more considered. It's the single easiest thing to get right. */
+
+  --bg:            #fbfaf8;   /* page background — a warm off-white          */
+  --bg-soft:       #f3f1ec;   /* slightly darker: footer, pills, code        */
+  --surface:       #ffffff;   /* cards — lifted above the page background    */
+  --border:        #e2ded6;   /* hairlines and card outlines                 */
+  --border-strong: #cdc7bb;   /* a more visible border, for outlined buttons */
+
+  --text:          #1e1c19;   /* body text and headings                      */
+  --text-muted:    #625d55;   /* secondary text: subtitles, captions         */
+  --text-faint:    #8b857b;   /* tertiary: labels, dates, the eyebrow line   */
+
+  --accent:        #1d4e6f;   /* THE colour. Links, buttons, highlights.
+                                 One accent, used consistently, is what makes
+                                 a site look designed rather than decorated.
+                                 Try #6b4423 (brown), #2d5a3d (green) or
+                                 #5b3a70 (plum) if blue isn't to your taste. */
+  --accent-soft:   #e8eef3;   /* a pale wash of the accent, for backgrounds  */
+  --accent-hover:  #14384f;   /* the accent, darkened, for hover states      */
+
   --shadow:        0 1px 2px rgba(30, 28, 25, .05), 0 8px 24px rgba(30, 28, 25, .05);
+  /* Two shadows layered: a tight one for the edge, a wide soft one for depth.
+     Both very faint. A heavy shadow is the fastest way to look dated. */
 
-  /* Type */
+  /* ---- TYPE ----------------------------------------------------------------
+     Each of these is a FALLBACK STACK, read left to right: the browser uses
+     the first font it finds installed. No web fonts are downloaded, which is
+     why this site loads instantly and works offline. The trade-off is that
+     it looks slightly different on a Mac and a PC — both fine, not identical. */
+
   --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  --font-sans:  ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  /* Headings. Serif for headings + sans for body is the classic academic pairing. */
 
-  /* Metrics */
-  --measure:  72rem;   /* page max width  */
-  --prose:    46rem;   /* comfortable reading width */
-  --radius:   10px;
-  --step:     1.5rem;
+  --font-sans:  ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Body text. "ui-sans-serif" and "-apple-system" mean "whatever this
+     operating system uses for its own interface" — so it always feels native. */
+
+  --font-mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  /* Fixed width. Used for course codes and date tags. */
+
+  /* ---- METRICS -------------------------------------------------------------
+     rem = a multiple of the browser's base font size (normally 16px).
+     So 72rem ≈ 1152px. Using rem rather than px means the layout scales
+     properly for someone who has increased their default text size. */
+
+  --measure:  72rem;   /* how wide the page gets before it stops growing   */
+  --prose:    46rem;   /* how wide a paragraph gets — about 75 characters,
+                          which is the comfortable maximum for reading     */
+  --radius:   10px;    /* corner rounding on cards and images              */
+  --step:     1.5rem;  /* a spacing unit (currently unused; here if you
+                          want to standardise your own spacing)            */
 }
+
+
+/* ---- DARK THEME -----------------------------------------------------------
+   The same variable names with different values. When main.js sets
+   data-theme="dark" on the <html> element, these take over and every rule in
+   the rest of the file follows automatically — nothing else has to know that
+   dark mode exists. That is the entire reason for using variables.
+
+   Notes on the choices:
+   • The background is #14161a, not black. Pure black next to white text
+     causes visible halation and is tiring to read.
+   • The accent gets LIGHTER (#7fb3d5), not darker. A dark blue on a dark grey
+     is unreadable; dark backgrounds need light accents.
+   • Shadows get stronger, because a faint shadow is invisible on dark. */
 
 [data-theme="dark"] {
   --bg:            #14161a;
@@ -59,86 +130,144 @@
   --shadow:        0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .28);
 }
 
-/* 2. Base & typography -------------------------------------------------- */
+
+/* ============================================================================
+   2. BASE & TYPOGRAPHY — the defaults everything else builds on
+   ============================================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
+/* The single most useful line in any stylesheet. It makes "width: 300px" mean
+   the element is 300px wide INCLUDING its padding and border, rather than
+   300px plus padding plus border. Without it, sizing is a constant fight. */
 
 html {
-  scroll-behavior: smooth;
-  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;      /* jump links glide rather than teleport */
+  -webkit-text-size-adjust: 100%;  /* stops iOS inflating text in landscape */
 }
 
+/* Some people get motion sickness from animation, and set a system
+   preference asking sites not to move. This honours it. */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 
 body {
-  margin: 0;
+  margin: 0;                    /* browsers add a default margin; remove it */
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  font-size: 1.0625rem;         /* 17px — slightly larger than the 16px
+                                   default, which is a touch small for prose */
+  line-height: 1.7;             /* space between lines. 1.5–1.8 is the
+                                   readable range; tighter feels cramped */
   -webkit-font-smoothing: antialiased;
   transition: background-color .2s ease, color .2s ease;
+  /* ↑ makes the light/dark switch fade over 0.2s instead of snapping */
 }
+
+/* ---- HEADINGS --------------------------------------------------------------
+   All four share the serif face and tight line spacing; only the size differs.
+   h4 is the exception — it drops back to the sans face, because at that size
+   a serif starts to look like body text rather than a heading. */
 
 h1, h2, h3, h4 {
   font-family: var(--font-serif);
   font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -.01em;
+  line-height: 1.25;            /* tighter than body text: big text needs
+                                   less breathing room between lines */
+  letter-spacing: -.01em;       /* a fraction tighter — large serif type
+                                   looks loose at default spacing */
   color: var(--text);
   margin: 0 0 .5em;
 }
 
+/* clamp(min, preferred, max) is fluid sizing: the heading grows with the
+   window between the two limits, so it's never tiny on a phone or absurd on
+   a 32-inch monitor. The "vw" in the middle means "% of viewport width". */
 h1 { font-size: clamp(2rem, 1.4rem + 2.2vw, 2.9rem); }
 h2 { font-size: clamp(1.45rem, 1.2rem + 1vw, 1.8rem); margin-top: 2.5rem; }
 h3 { font-size: 1.2rem; margin-top: 1.75rem; }
 h4 { font-size: 1.02rem; font-family: var(--font-sans); font-weight: 650; margin-top: 1.25rem; }
 
-p  { margin: 0 0 1.1em; }
-a  { color: var(--accent); text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent); text-underline-offset: 3px; }
+p  { margin: 0 0 1.1em; }   /* space below each paragraph, none above, so
+                               spacing never doubles up between elements */
+
+a  {
+  color: var(--accent);
+  text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  /* ↑ the underline at 35% opacity: present, but not shouting. It goes to
+       full strength on hover, below. */
+  text-underline-offset: 3px;  /* drops the underline clear of the letters */
+}
 a:hover { color: var(--accent-hover); text-decoration-color: currentColor; }
 
 strong { font-weight: 650; }
 small  { font-size: .875rem; color: var(--text-muted); }
 code   { font-family: var(--font-mono); font-size: .875em; background: var(--bg-soft); padding: .12em .38em; border-radius: 4px; }
 hr     { border: 0; border-top: 1px solid var(--border); margin: 2.5rem 0; }
-img    { max-width: 100%; height: auto; display: block; }
 
+img {
+  max-width: 100%;   /* never let an image overflow its container */
+  height: auto;      /* keep the proportions when it shrinks */
+  display: block;    /* removes the mysterious few pixels of gap underneath
+                        images, which is caused by them being treated as text */
+}
+
+/* The focus ring: what you see when tabbing through the page with a keyboard.
+   :focus-VISIBLE rather than :focus means it appears for keyboard users but
+   not on mouse clicks. Please don't remove this — for keyboard-only users it
+   is the only way to tell where they are on the page. */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 3px;
 }
 
+/* "Skip to content": parked off-screen until it receives keyboard focus,
+   at which point it slides into view. A small courtesy to screen-reader
+   users, who would otherwise hear the whole menu on every page. */
 .skip-link {
   position: absolute; left: -9999px; top: 0; z-index: 100;
   background: var(--accent); color: #fff; padding: .6rem 1rem; border-radius: 0 0 var(--radius) 0;
 }
 .skip-link:focus { left: 0; }
 
+/* Hides something visually while leaving it readable by screen readers.
+   Not currently used — kept because it's the standard way to label something
+   for assistive tech without showing the label on screen. */
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; margin: -1px;
   padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
-/* 3. Layout helpers ----------------------------------------------------- */
 
+/* ============================================================================
+   3. LAYOUT HELPERS
+   ============================================================================ */
+
+/* .wrap is on every major block. It centres content and stops it touching the
+   screen edges. The clamp() gives 1.15rem of side padding on a phone, growing
+   to 2.5rem on a desktop. */
 .wrap {
   width: 100%;
   max-width: var(--measure);
-  margin-inline: auto;
+  margin-inline: auto;              /* auto left and right = centred */
   padding-inline: clamp(1.15rem, 4vw, 2.5rem);
 }
 
 main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
+/* ↑ two values = top, bottom */
 
 .prose { max-width: var(--prose); }
+/* Put this on any block of running text. Long lines are hard to read: the eye
+   loses its place travelling back to the start of the next one. Leave it OFF
+   for cards, grids and galleries, which should use the full width. */
 
 .page-head { max-width: var(--prose); margin-bottom: 2.5rem; }
+
+/* The small uppercase label above a page title. Letter-spacing is essential
+   on uppercase text — without it the capitals crowd each other. */
 .eyebrow {
   font-family: var(--font-sans);
   font-size: .74rem;
@@ -148,15 +277,17 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   color: var(--text-faint);
   margin: 0 0 .7rem;
 }
-.page-head .lede {
-  font-size: 1.15rem;
-  color: var(--text-muted);
-  margin-bottom: 0;
-}
+
+.page-head .lede { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 0; }
+/* Two selectors with a space: "a .lede that is inside a .page-head". */
 
 .section { margin-top: 3.25rem; }
 .section:first-of-type { margin-top: 0; }
+/* ↑ no gap above the first section — the page padding already handles it */
 
+/* The heading with a rule trailing off to the right. The trick: make the
+   heading a flex row, then add an empty element after the text that expands
+   to fill whatever space is left. */
 .section-title {
   display: flex;
   align-items: baseline;
@@ -164,27 +295,36 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   margin-top: 0;
 }
 .section-title::after {
-  content: "";
-  flex: 1;
+  content: "";              /* required, even when empty, or nothing appears */
+  flex: 1;                  /* "take all the remaining space" */
   height: 1px;
   background: var(--border);
 }
 
-/* 4. Header / navigation ------------------------------------------------ */
+
+/* ============================================================================
+   4. HEADER / NAVIGATION
+   ============================================================================ */
 
 .site-header {
-  position: sticky;
+  position: sticky;   /* stays visible at the top as you scroll */
   top: 0;
-  z-index: 50;
+  z-index: 50;        /* stacking order — keeps it above the page content */
   background: color-mix(in srgb, var(--bg) 88%, transparent);
+  /* ↑ 88% background colour, 12% see-through, so content faintly shows
+       through as it scrolls underneath */
   backdrop-filter: saturate(180%) blur(12px);
+  /* ↑ frosted glass: blurs whatever is behind it. Purely decorative;
+       browsers that don't support it just show the solid colour. */
   border-bottom: 1px solid var(--border);
 }
 
+/* display:flex lays children out in a row. It is the workhorse of this
+   stylesheet — you'll see it a dozen more times below. */
 .site-header .wrap {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: center;   /* vertically centre everything in the row */
+  gap: 1rem;             /* space between items, without margins */
   min-height: 68px;
 }
 
@@ -193,13 +333,14 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   font-size: 1.16rem;
   font-weight: 600;
   color: var(--text);
-  text-decoration: none;
+  text-decoration: none;   /* no underline on the name */
   letter-spacing: -.01em;
-  white-space: nowrap;
+  white-space: nowrap;     /* never break the name across two lines */
 }
-.brand:hover { color: var(--text); }
+.brand:hover { color: var(--text); }   /* deliberately doesn't change colour */
+
 .brand .brand-sub {
-  display: block;
+  display: block;          /* forces it onto its own line under the name */
   font-family: var(--font-sans);
   font-size: .68rem;
   font-weight: 500;
@@ -210,16 +351,21 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 }
 
 .nav { margin-left: auto; }
+/* "margin-left: auto" inside a flex row means "absorb all the spare space on
+   my left", which pushes the menu to the right-hand edge. */
+
 .nav ul {
   display: flex;
   align-items: center;
   gap: .3rem;
-  list-style: none;
+  list-style: none;   /* no bullets */
   margin: 0;
-  padding: 0;
+  padding: 0;         /* browsers indent lists by default; remove it */
 }
+
 .nav a {
-  display: block;
+  display: block;      /* makes the whole padded box clickable, not just the
+                          text — a bigger target is an easier target */
   padding: .45rem .7rem;
   border-radius: 7px;
   font-size: .93rem;
@@ -228,6 +374,10 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   white-space: nowrap;
 }
 .nav a:hover { color: var(--text); background: var(--bg-soft); }
+
+/* The current page. main.js adds aria-current="page" to the right link, and
+   this rule styles it. Styling the accessibility attribute directly, rather
+   than a separate class, means there is only one thing to keep correct. */
 .nav a[aria-current="page"] {
   color: var(--accent);
   background: var(--accent-soft);
@@ -236,13 +386,17 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 
 .header-tools { display: flex; align-items: center; gap: .35rem; margin-left: .5rem; }
 
+/* The square icon buttons — theme toggle, hamburger. 38px is close to the
+   40-44px minimum that's comfortable to hit with a thumb. */
 .icon-btn {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center;   /* centres the icon both ways */
   width: 38px; height: 38px;
   padding: 0;
-  border: 1px solid transparent;
+  border: 1px solid transparent;  /* invisible, but reserves the space so the
+                                     button doesn't jump when the border
+                                     appears on hover */
   border-radius: 8px;
   background: none;
   color: var(--text-muted);
@@ -251,24 +405,36 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 .icon-btn:hover { color: var(--text); background: var(--bg-soft); border-color: var(--border); }
 .icon-btn svg { width: 19px; height: 19px; }
 
-/* the toggle swaps which glyph is visible */
+/* THE THEME TOGGLE ICONS
+   Both the sun and the moon sit in the button; CSS shows one and hides the
+   other depending on the theme. No JavaScript needed for the swap — the
+   script only flips data-theme, and these four lines do the rest. */
 [data-theme="dark"] .icon-sun  { display: none; }
 [data-theme="dark"] .icon-moon { display: block; }
 .icon-sun  { display: block; }
 .icon-moon { display: none; }
 
 .nav-toggle { display: none; }
+/* The hamburger is hidden by default and switched on in section 10, at the
+   narrow breakpoint. Desktop-first for this one element. */
 
-/* 5. Hero (About page) -------------------------------------------------- */
 
+/* ============================================================================
+   5. HERO — the About page's opening block
+   ============================================================================ */
+
+/* CSS Grid, as opposed to flex: two columns, the first flexible, the second a
+   fixed 280px for the photo. "minmax(0, 1fr)" is a standard incantation that
+   stops long words from forcing the column wider than it should be. */
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
   gap: clamp(2rem, 5vw, 3.5rem);
-  align-items: start;
+  align-items: start;   /* both columns start at the top, rather than being
+                           vertically centred against each other */
 }
 
-.hero-photo figure { margin: 0; }
+.hero-photo figure { margin: 0; }   /* <figure> has a big default margin */
 .hero-photo img {
   width: 100%;
   border-radius: var(--radius);
@@ -284,24 +450,26 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 }
 
 .hero h1 { margin-bottom: .35rem; }
-.hero .affil {
-  font-size: 1.05rem;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-}
+.hero .affil { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 1.5rem; }
 .hero .affil a { font-weight: 500; }
 
-/* 6. Content blocks ----------------------------------------------------- */
+
+/* ============================================================================
+   6. CONTENT BLOCKS — the reusable pieces
+   ============================================================================ */
+
+/* ---- BUTTONS -------------------------------------------------------------- */
 
 .btn {
-  display: inline-flex;
+  display: inline-flex;      /* inline, but able to centre an icon beside text */
   align-items: center;
-  gap: .5rem;
+  gap: .5rem;                /* space between the icon and the label */
   padding: .58rem 1.05rem;
   border-radius: 8px;
   border: 1px solid var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: #fff;               /* literal white: this sits on the accent colour
+                                in both themes, so it must not follow --text */
   font-size: .93rem;
   font-weight: 550;
   text-decoration: none;
@@ -310,16 +478,17 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 .btn:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
 .btn svg { width: 16px; height: 16px; }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--accent);
-  border-color: var(--border-strong);
-}
+/* The outlined variant. class="btn btn-ghost" applies both: .btn sets the
+   shape and spacing, .btn-ghost overrides the colours. Building variants by
+   overriding a base class keeps them consistent. */
+.btn-ghost { background: transparent; color: var(--accent); border-color: var(--border-strong); }
 .btn-ghost:hover { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
 
 .btn-row { display: flex; flex-wrap: wrap; gap: .6rem; margin: 1.5rem 0 0; }
+/* flex-wrap lets buttons drop onto a second line rather than squashing. */
 
-/* Social icon links */
+/* ---- SOCIAL ICONS --------------------------------------------------------- */
+
 .social {
   display: flex;
   flex-wrap: wrap;
@@ -339,9 +508,14 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   background: var(--surface);
 }
 .social a:hover { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
-.social svg { width: 19px; height: 19px; fill: currentColor; }
 
-/* Card */
+.social svg { width: 19px; height: 19px; fill: currentColor; }
+/* fill: currentColor makes the icon take the link's text colour — which is
+   why the icons change colour on hover without any extra rules, and why they
+   work in both themes. */
+
+/* ---- CARDS ---------------------------------------------------------------- */
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -350,24 +524,33 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   box-shadow: var(--shadow);
 }
 .card + .card { margin-top: 1.1rem; }
-/* inside a grid the gap already does the spacing */
+/* "A + B" means "a B that comes immediately after an A" — so this spaces
+   stacked cards without putting a stray margin above the first one. */
+
 .card-grid .card + .card { margin-top: 0; }
+/* Inside a grid, the grid's own gap does the spacing. Without this line the
+   cards in a row would sit at different heights. */
+
 .card > :first-child { margin-top: 0; }
 .card > :last-child  { margin-bottom: 0; }
+/* Strips the stray margin off the first and last things inside a card, so the
+   padding is even. ">" means "direct child", not any descendant. */
 
+/* The auto-fitting grid. Read it as: "as many columns as fit, each at least
+   20rem wide (or the full width, whichever is smaller), sharing the space
+   equally". You never specify a column count — add a fourth card and the grid
+   reflows. This one line replaces a pile of media queries. */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
   gap: 1.1rem;
 }
 
-/* Meta line: affiliation, supervisor, dates */
-.meta {
-  font-size: .9rem;
-  color: var(--text-muted);
-  margin: 0 0 .9rem;
-}
+/* ---- SMALL TEXT PIECES ---------------------------------------------------- */
+
+.meta { font-size: .9rem; color: var(--text-muted); margin: 0 0 .9rem; }
 .meta .sep { color: var(--text-faint); margin-inline: .5rem; }
+/* The "·" between items, dimmer than the text it separates. */
 
 .date-tag {
   display: inline-block;
@@ -376,12 +559,14 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   letter-spacing: .02em;
   color: var(--text-faint);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: 999px;   /* any number larger than half the height gives a
+                             perfect pill; 999px is the usual shorthand */
   padding: .12rem .6rem;
   white-space: nowrap;
 }
 
-/* Pills (skills, instruments, languages) */
+/* ---- PILLS (skills, instruments, languages) -------------------------------- */
+
 .pills { display: flex; flex-wrap: wrap; gap: .45rem; list-style: none; margin: .75rem 0 0; padding: 0; }
 .pills li {
   font-size: .86rem;
@@ -392,61 +577,93 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   padding: .22rem .75rem;
 }
 
-/* Course list (Teaching + Academics) */
+/* ---- COURSE LIST (Teaching, Academics) ------------------------------------- */
+
 .course-list { list-style: none; margin: .75rem 0 0; padding: 0; max-width: 56rem; }
 .course-list li {
   display: flex;
   gap: .9rem;
-  align-items: baseline;
+  align-items: baseline;     /* aligns the text baselines, not the boxes —
+                                which is what makes mixed sizes look level */
   padding: .55rem 0;
   border-bottom: 1px dashed var(--border);
 }
-.course-list li:last-child { border-bottom: 0; }
+.course-list li:last-child { border-bottom: 0; }   /* no line under the last */
+
 .course-list .code {
   font-family: var(--font-mono);
   font-size: .82rem;
   color: var(--accent);
-  min-width: 5.5rem;
-  flex-shrink: 0;
+  min-width: 5.5rem;   /* fixed column, so all the titles line up */
+  flex-shrink: 0;      /* never let it squash */
 }
 .course-list .name { color: var(--text); }
 .course-list .note { margin-left: auto; font-size: .84rem; color: var(--text-faint); }
+/* margin-left:auto again — pushes the note to the right-hand edge. */
 
-/* Two/three column course columns for Academics */
+/* ---- TWO-COLUMN LIST (Academics coursework) -------------------------------- */
+
 .col-list { columns: 2; column-gap: 2.5rem; max-width: 56rem; }
+/* "columns: 2" flows ONE list into two newspaper columns. You keep a single
+   <ul> and the browser splits it, rebalancing as you add items. Don't build
+   two separate lists side by side — this is much less work to maintain. */
 .col-list ul { margin: 0; padding-left: 1.1rem; }
 .col-list li { break-inside: avoid; margin-bottom: .3rem; }
+/* break-inside stops a single item being sliced across the column boundary. */
 
-/* Stat row */
+/* ---- STATS ROW ------------------------------------------------------------- */
+
 .stats { display: flex; flex-wrap: wrap; gap: 1.75rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
 .stats .value { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; display: block; }
 .stats .label { font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--text-faint); }
 
-/* Timeline (education / experience) */
+/* ---- TIMELINE (education, past projects) ----------------------------------- */
+
+/* The vertical line is just a left border on the list. The dots are drawn
+   with ::before on each item and pulled out over the line with a negative
+   offset — no images, no extra markup. */
 .timeline { list-style: none; margin: .5rem 0 0; padding: 0 0 0 1.4rem; border-left: 2px solid var(--border); }
 .timeline > li { position: relative; padding: 0 0 1.6rem .4rem; }
 .timeline > li::before {
   content: "";
   position: absolute;
-  left: calc(-1.4rem - 5px);
+  left: calc(-1.4rem - 5px);   /* back out over the border: the list padding
+                                  plus half the dot's width */
   top: .55rem;
   width: 9px; height: 9px;
-  border-radius: 50%;
+  border-radius: 50%;          /* a square with 50% radius is a circle */
   background: var(--accent);
-  border: 2px solid var(--bg);
+  border: 2px solid var(--bg);  /* a ring of page colour, so the dot appears
+                                   to sit on top of the line rather than
+                                   being crossed by it */
 }
 .timeline h3 { margin: 0 0 .15rem; font-size: 1.05rem; }
 .timeline p  { margin: 0; }
 
-/* 7. Publications ------------------------------------------------------- */
+
+/* ============================================================================
+   7. PUBLICATIONS — the paper entries on the Research page
+   ============================================================================ */
 
 .pub { display: flex; flex-direction: column; }
+
+/* Title on the left, date tag on the right, and if the title is long the tag
+   drops below instead of squashing it. "flex: 1 1 20rem" on the heading reads
+   as: grow to fill, shrink if needed, but never narrower than 20rem — at
+   which point the tag wraps to the next line. */
 .pub-head { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: baseline; justify-content: space-between; }
 .pub h3 { margin: 0; font-size: 1.12rem; flex: 1 1 20rem; }
+
 .pub .authors { font-size: .93rem; color: var(--text-muted); margin: .5rem 0 .35rem; }
 .pub .authors .me { color: var(--text); font-weight: 650; }
+/* Your own name, darker and bolder than your co-authors' — the standard
+   convention on academic pages, so a reader can scan a list of papers and
+   find you instantly. */
+
 .pub .venue { font-size: .93rem; color: var(--text-muted); font-style: italic; margin: 0 0 .9rem; }
 .pub .abstract { font-size: .96rem; color: var(--text-muted); margin-bottom: 1rem; }
+
+/* The row of DOI / arXiv / PDF / BibTeX pills. */
 .pub-links { display: flex; flex-wrap: wrap; gap: .45rem; }
 .pub-links a {
   font-size: .82rem;
@@ -463,8 +680,15 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 .pub-figure img { border: 1px solid var(--border); border-radius: 8px; background: var(--bg-soft); }
 .pub-figure figcaption { font-size: .84rem; color: var(--text-faint); margin-top: .5rem; }
 
-/* 8. Gallery + lightbox ------------------------------------------------- */
 
+/* ============================================================================
+   8. GALLERY + LIGHTBOX
+   ============================================================================ */
+
+/* auto-FILL rather than auto-fit (used on .card-grid): with auto-fill, a
+   final lone image stays its normal size instead of stretching across the
+   whole row. Worth knowing — it's the one letter of difference between the
+   two grid rules in this file. */
 .gallery {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
@@ -480,17 +704,23 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg-soft);
-  overflow: hidden;
-  cursor: zoom-in;
+  overflow: hidden;   /* clips the image to the rounded corners, and contains
+                         the zoom effect below */
+  cursor: zoom-in;    /* the magnifier cursor tells people it will enlarge */
 }
 .gallery button:hover { border-color: var(--accent); }
+
 .gallery img {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+  aspect-ratio: 4 / 3;    /* forces every thumbnail to the same shape, so the
+                             grid stays tidy whatever your photos' proportions */
+  object-fit: cover;      /* fills that shape by cropping, never by squashing */
   transition: transform .35s ease;
 }
 .gallery button:hover img { transform: scale(1.035); }
+/* A 3.5% zoom on hover. Small enough to register as responsive rather than
+   as an animation. */
+
 .gallery .cap {
   display: block;
   text-align: left;
@@ -501,35 +731,40 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
   border-top: 1px solid var(--border);
 }
 
+/* ---- THE LIGHTBOX ---------------------------------------------------------- */
+
+/* position:fixed + inset:0 pins it to all four edges of the window,
+   regardless of scroll position — a full-screen overlay in two lines. */
 .lightbox {
   position: fixed;
   inset: 0;
-  z-index: 100;
-  display: none;
+  z-index: 100;      /* above everything, including the sticky header (50) */
+  display: none;     /* hidden until opened */
   align-items: center;
   justify-content: center;
   padding: clamp(1rem, 4vw, 3rem);
-  background: rgba(12, 12, 14, .92);
+  background: rgba(12, 12, 14, .92);   /* near-black, slightly see-through */
   backdrop-filter: blur(3px);
 }
 .lightbox[open], .lightbox.is-open { display: flex; }
+/* main.js adds the "is-open" class, which flips display from none to flex. */
 
 .lightbox figure { margin: 0; max-width: min(100%, 62rem); }
 .lightbox img {
   max-width: 100%;
-  max-height: 76vh;
+  max-height: 76vh;      /* 76% of the window height, leaving room for the
+                            caption underneath */
   margin-inline: auto;
   border-radius: 8px;
-  object-fit: contain;
+  object-fit: contain;   /* contain, not cover: show the whole image, never
+                            crop it. The opposite choice to the thumbnails. */
 }
-.lightbox figcaption {
-  color: #e9e6e1;
-  text-align: center;
-  font-size: .95rem;
-  margin-top: 1rem;
-}
+.lightbox figcaption { color: #e9e6e1; text-align: center; font-size: .95rem; margin-top: 1rem; }
 .lightbox .counter { display: block; color: #9d978d; font-size: .8rem; margin-top: .35rem; }
+/* Fixed light colours here, not variables: the overlay is dark in both
+   themes, so the text on it must always be light. */
 
+/* The close and arrow buttons. */
 .lb-btn {
   position: absolute;
   display: inline-flex;
@@ -544,11 +779,18 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 }
 .lb-btn:hover { background: rgba(255, 255, 255, .18); }
 .lb-btn svg { width: 20px; height: 20px; }
+
 .lb-close { top: clamp(1rem, 3vw, 2rem); right: clamp(1rem, 3vw, 2rem); }
 .lb-prev  { left: clamp(.5rem, 2vw, 2rem); top: 50%; transform: translateY(-50%); }
 .lb-next  { right: clamp(.5rem, 2vw, 2rem); top: 50%; transform: translateY(-50%); }
+/* top:50% puts the button's TOP edge at the middle; translateY(-50%) then
+   shifts it up by half its own height to truly centre it. This pairing is
+   the standard way to centre something of unknown height. */
 
-/* 9. Footer ------------------------------------------------------------- */
+
+/* ============================================================================
+   9. FOOTER
+   ============================================================================ */
 
 .site-footer {
   border-top: 1px solid var(--border);
@@ -560,45 +802,73 @@ main { padding-block: clamp(2.5rem, 5vw, 4rem) 4rem; }
 .site-footer .wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem 2rem;
+  gap: 1rem 2rem;                  /* row gap, column gap */
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between;  /* first item left, last item right */
 }
 .site-footer .social { margin: 0; }
 .site-footer .social a { width: 34px; height: 34px; }
 .site-footer .social svg { width: 16px; height: 16px; }
 .site-footer p { margin: 0; }
 
-/* 10. Responsive -------------------------------------------------------- */
+
+/* ============================================================================
+   10. RESPONSIVE — narrow screens
+   ============================================================================
+   A media query is a set of rules that only applies under a condition. These
+   are all "max-width", meaning "when the window is NARROWER than this".
+
+   The rest of the file is written to work at any width — the grids and flex
+   rows above already reflow on their own. These blocks only handle the few
+   things that genuinely need a different arrangement on a small screen.
+   ============================================================================ */
 
 @media (max-width: 860px) {
+  /* Tablet and below: the hero drops from two columns to one. */
   .hero { grid-template-columns: 1fr; }
   .hero-photo { order: -1; max-width: 220px; }
-  .col-list { columns: 1; }
+  /* order:-1 moves the photo ABOVE the text, without changing the HTML.
+     A photo below three paragraphs on a phone would rarely be seen. */
+
+  .col-list { columns: 1; }   /* two columns are too narrow to read here */
 }
 
 @media (max-width: 760px) {
+  /* Phone: the menu becomes a hamburger. */
+
   .nav-toggle { display: inline-flex; order: 3; }
   .header-tools { margin-left: auto; }
 
   .nav {
     order: 4;
-    flex-basis: 100%;
+    flex-basis: 100%;   /* take a full row of its own, below the top line */
     margin-left: 0;
-    display: none;
+    display: none;      /* hidden until the hamburger is tapped */
     padding-bottom: .9rem;
   }
-  .nav.is-open { display: block; }
+  .nav.is-open { display: block; }   /* main.js toggles this class */
+
   .nav ul { flex-direction: column; align-items: stretch; gap: .1rem; }
-  .nav a { padding: .65rem .8rem; }
+  .nav a { padding: .65rem .8rem; }  /* taller rows: easier to hit with a thumb */
 
   .site-header .wrap { flex-wrap: wrap; padding-block: .5rem 0; min-height: 0; }
   .site-header .wrap > .brand { padding-block: .55rem; }
 
   .course-list li { flex-wrap: wrap; }
   .course-list .note { margin-left: 0; flex-basis: 100%; }
+  /* The note stops being a right-hand column and moves to its own line. */
+
   .site-footer .wrap { flex-direction: column; align-items: flex-start; }
 }
+
+
+/* ============================================================================
+   PRINT — what comes out if someone prints the page or saves it as PDF
+   ============================================================================
+   Strip the navigation, footer and buttons (useless on paper), force black on
+   white to save ink, and spell out nothing else. "break-inside: avoid" stops
+   a card being split across two sheets.
+   ============================================================================ */
 
 @media print {
   .site-header, .site-footer, .lightbox, .btn-row, .social { display: none !important; }
