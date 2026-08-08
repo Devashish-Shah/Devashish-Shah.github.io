@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 600" role="img" aria-label="Figure placeholder">
+  <rect width="1280" height="600" fill="#f1eee8"/>
+  <g stroke="#cfc8bc" stroke-width="2" fill="none">
+    <path d="M120 500H1160M120 500V80"/>
+    <path d="M120 460q120 0 160-140t160-140 160 140 160 140 160-140 160-140" stroke="#1d4e6f" stroke-width="3"/>
+  </g>
+  <text x="640" y="560" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="#8b857b">figure placeholder — replace with a panel from the paper</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Gallery placeholder 3">
+  <rect width="1200" height="900" fill="#e0d6cd"/>
+  <circle cx="600" cy="420" r="180" fill="none" stroke="#8b857b" stroke-width="6"/>
+  <path d="M300 700h600" stroke="#8b857b" stroke-width="6" stroke-linecap="round"/>
+  <text x="600" y="820" text-anchor="middle" font-family="Georgia, serif" font-size="44" fill="#6b665e">image 3</text>
+</svg>
